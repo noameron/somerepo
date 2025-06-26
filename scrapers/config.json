@@ -1,0 +1,12 @@
+{
+  "max_days": 3,
+  "min_days": 1,
+  "subreddits": [
+    "WallStreetBets"
+  ],
+  "tickers": [
+    "AAPL",
+    "TSLA",
+    "GOOG"
+  ]
+}
