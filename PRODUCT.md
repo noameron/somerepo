@@ -46,7 +46,7 @@ The system comprises two primary components:
 | Table | Columns | Purpose |
 |-------|---------|---------|
 | `stocks` | `id`, `symbol` | List of monitored tickers |
-| `data_points` | `id`, `stock_id`, `source`, `content`, `url`, `collected_at` | Raw text artifacts |
+| `mentions` | `id`, `stock_id`, `source`, `content`, `url`, `collected_at` | Stock mentions from various sources |
 
 ### 3.3 Sentiment Analysis (LLM)
 1. Advisor selects unanalyzed rows.  

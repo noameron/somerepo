@@ -12,9 +12,9 @@ import sys
 import praw
 from dotenv import load_dotenv
 
-# Add parent directory to path to import modules
-sys.path.append(str(Path(__file__).parent.parent))
-from data_source import DataSource
+# Import from advisor package
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+from advisor.core.data_source import DataSource
 
 
 class RedditDataSource(DataSource):
@@ -23,7 +23,7 @@ class RedditDataSource(DataSource):
     def __init__(self, config: Dict[str, Any]):
         """Initialize Reddit data source."""
         # Load environment variables from project root first
-        project_root = Path(__file__).parent.parent
+        project_root = Path(__file__).parent.parent.parent.parent  # Go up from advisor/scrapers/reddit/ to project root
         load_dotenv(project_root / ".env")
         
         super().__init__(config)
@@ -99,7 +99,7 @@ class RedditDataSource(DataSource):
     
     def process_content_for_tickers(self, content: str, url: str, 
                                    external_id: str, metadata: str) -> int:
-        """Process content and store data points for each ticker found."""
+        """Process content and store mentions for each ticker found."""
         found_tickers = self.extract_tickers_from_text(content)
         stored_count = 0
         
@@ -110,12 +110,12 @@ class RedditDataSource(DataSource):
         if self.is_duplicate(external_id):
             return 0
         
-        # Store data point for each ticker mentioned
+        # Store mention for each ticker mentioned
         for ticker in found_tickers:
             stock_id = self.get_stock_id(ticker)
-            if stock_id and self.store_data_point(stock_id, content, url, external_id, metadata):
+            if stock_id and self.store_mention(stock_id, content, url, external_id, metadata):
                 stored_count += 1
-                print(f"✓ Stored content {external_id.split('_')[-1]} for {ticker}")
+                print(f"✓ Stored mention {external_id.split('_')[-1]} for {ticker}")
         
         return stored_count
     

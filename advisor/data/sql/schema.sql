@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS stocks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create data_points table
-CREATE TABLE IF NOT EXISTS data_points (
+-- Create mentions table
+CREATE TABLE IF NOT EXISTS mentions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     stock_id INTEGER NOT NULL,
     source TEXT NOT NULL,
@@ -22,6 +22,6 @@ CREATE TABLE IF NOT EXISTS data_points (
 );
 
 -- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_data_points_stock_id ON data_points(stock_id);
-CREATE INDEX IF NOT EXISTS idx_data_points_source ON data_points(source);
-CREATE INDEX IF NOT EXISTS idx_data_points_collected_at ON data_points(collected_at);
+CREATE INDEX IF NOT EXISTS idx_mentions_stock_id ON mentions(stock_id);
+CREATE INDEX IF NOT EXISTS idx_mentions_source ON mentions(source);
+CREATE INDEX IF NOT EXISTS idx_mentions_collected_at ON mentions(collected_at);

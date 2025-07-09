@@ -2,12 +2,8 @@
 
 import json
 import os
-from pathlib import Path
-import sys
 
-# Add parent directory to path to import modules
-sys.path.append(str(Path(__file__).parent.parent))
-from scrapers.reddit_data_source import RedditDataSource
+from .data_source import RedditDataSource
 
 def scrape():
     """Scrape Reddit data using RedditDataSource."""

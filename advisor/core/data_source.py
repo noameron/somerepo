@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
-from database import Database
+from .database import Database
 
 
 class DataSource(ABC):
@@ -39,14 +39,14 @@ class DataSource(ABC):
             self.db.add_stock(ticker)
     
     def is_duplicate(self, external_id: str) -> bool:
-        """Check if content already exists in database."""
-        return self.db.data_point_exists(self.get_source_name(), external_id)
+        """Check if mention already exists in database."""
+        return self.db.mention_exists(self.get_source_name(), external_id)
     
-    def store_data_point(self, stock_id: int, content: str, url: str, 
-                        external_id: str, metadata: str) -> bool:
-        """Store a data point in the database."""
+    def store_mention(self, stock_id: int, content: str, url: str, 
+                     external_id: str, metadata: str) -> bool:
+        """Store a stock mention in the database."""
         try:
-            self.db.add_data_point(
+            self.db.add_mention(
                 stock_id=stock_id,
                 source=self.get_source_name(),
                 content=content,
@@ -56,8 +56,14 @@ class DataSource(ABC):
             )
             return True
         except Exception as e:
-            print(f"✗ Error storing data point: {e}")
+            print(f"✗ Error storing mention: {e}")
             return False
+    
+    # Backward compatibility method (deprecated)
+    def store_data_point(self, stock_id: int, content: str, url: str, 
+                        external_id: str, metadata: str) -> bool:
+        """Deprecated: Use store_mention() instead."""
+        return self.store_mention(stock_id, content, url, external_id, metadata)
     
     def get_stock_id(self, symbol: str) -> Optional[int]:
         """Get stock ID by symbol."""
