@@ -144,6 +144,8 @@ project/
 
 ## Git Commit Management - MANDATORY PRACTICES
 
+**Never commit cache/temp files** - Always exclude `__pycache__/`, `.pyc`, `.DS_Store`, IDE folders, and other generated files from commits.
+
 ### Commit Strategy - FREQUENT COMMITS
 **Make many small, focused commits rather than few large ones!**
 
