@@ -20,17 +20,6 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/noam.meron/Documents/somerepo/.claude/scripts/todo_sound.sh"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",

@@ -1,51 +1,84 @@
-"""Assistant CLI - Data collection orchestrator."""
+"""Assistant CLI for data collection."""
 
 import argparse
+import json
 import sys
 from pathlib import Path
-
-# Add project root to path for imports
-project_root = Path(__file__).parent.parent.parent
-sys.path.append(str(project_root))
-
-from advisor.scrapers.reddit import scrape as reddit_scrape
+from advisor.core.config import init_config
+from advisor.scrapers.reddit.data_source import RedditDataSource
 
 
-def main():
-    """Main CLI entry point for the assistant."""
+def collect_reddit_data(config_path: str = None) -> None:
+    """Collect data from Reddit sources."""
+    # Initialize configuration
+    if config_path:
+        config = init_config(config_path)
+    else:
+        config = init_config()
+    
+    # Load Reddit-specific configuration
+    reddit_config_path = Path(__file__).parent.parent / "scrapers" / "reddit" / "config.json"
+    
+    if not reddit_config_path.exists():
+        print(f"❌ Reddit config not found at: {reddit_config_path}")
+        sys.exit(1)
+    
+    with open(reddit_config_path, 'r') as f:
+        reddit_config = json.load(f)
+    
+    print("🚀 Starting Reddit data collection...")
+    print(f"📊 Tracking stocks: {reddit_config.get('tickers', [])}")
+    print(f"🗣️  Monitoring subreddits: {reddit_config.get('subreddits', [])}")
+    
+    try:
+        # Initialize Reddit scraper
+        reddit_source = RedditDataSource(reddit_config)
+        
+        # Validate Reddit credentials
+        if not config.validate_reddit_credentials():
+            print("❌ Missing Reddit API credentials in .env file")
+            print("Required: CLIENT_ID, CLIENT_SECRET, USER_AGENT")
+            sys.exit(1)
+        
+        # Run scraping
+        results = reddit_source.scrape()
+        
+        print(f"\n✅ Reddit scraping completed!")
+        print(f"📈 Stored mentions: {results['stored']}")
+        print(f"⏭️  Skipped duplicates: {results['skipped']}")
+        
+    except Exception as e:
+        print(f"❌ Error during Reddit scraping: {e}")
+        sys.exit(1)
+
+
+def main() -> None:
+    """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Advisor Assistant - Data Collection Tool")
     parser.add_argument(
-        "source", 
-        choices=["reddit", "all"], 
-        help="Data source to scrape"
+        "--config", 
+        type=str, 
+        help="Path to configuration file (optional)"
     )
     parser.add_argument(
-        "--verbose", "-v", 
-        action="store_true", 
-        help="Enable verbose output"
+        "--source",
+        choices=["reddit", "all"],
+        default="reddit",
+        help="Data source to collect from (default: reddit)"
     )
     
     args = parser.parse_args()
     
-    if args.verbose:
-        print(f"Starting data collection for: {args.source}")
+    print("📊 Advisor Assistant - Data Collection")
+    print("=" * 40)
     
-    if args.source == "reddit":
-        result = reddit_scrape()
-        if args.verbose:
-            print(f"Reddit scraping completed: {result}")
+    if args.source in ["reddit", "all"]:
+        collect_reddit_data(args.config)
     
-    elif args.source == "all":
-        if args.verbose:
-            print("Scraping all sources...")
-        
-        # Reddit
-        reddit_result = reddit_scrape()
-        if args.verbose:
-            print(f"Reddit: {reddit_result}")
-        
-        # TODO: Add SEC and News scrapers when implemented
-        print("Note: SEC and News scrapers not yet implemented")
+    if args.source == "all":
+        print("\n🔄 Future: Will add SEC and News collection here")
+    
+    print("\n🎉 Data collection complete!")
 
 
 if __name__ == "__main__":

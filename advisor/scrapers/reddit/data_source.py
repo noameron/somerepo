@@ -13,7 +13,6 @@ import praw
 from dotenv import load_dotenv
 
 # Import from advisor package
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 from advisor.core.data_source import DataSource
 
 
@@ -23,7 +22,7 @@ class RedditDataSource(DataSource):
     def __init__(self, config: Dict[str, Any]):
         """Initialize Reddit data source."""
         # Load environment variables from project root first
-        project_root = Path(__file__).parent.parent.parent.parent  # Go up from advisor/scrapers/reddit/ to project root
+        project_root = Path(__file__).parent.parent.parent  # Go up from advisor/scrapers/reddit/ to project root
         load_dotenv(project_root / ".env")
         
         super().__init__(config)

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Convenience script to run the Assistant CLI."""
+"""Run the Assistant CLI for data collection."""
 
 import sys
+sys.path.append('.')
+
 from advisor.cli.assistant import main
 
 if __name__ == "__main__":

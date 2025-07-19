@@ -1,5 +1,16 @@
+# Environment variables (contains sensitive API keys)
 .env
-/todo
+.env.local
+.env.*.local
+
+# Project specific
+todo/
+advisor.db
+test_advisor.db
+*.db
+*.sqlite
+*.sqlite3
+*.log
 
 # Python cache files
 __pycache__/
@@ -22,6 +33,11 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Claude Code settings
+.claude/
+CLAUDE.md
+PRODUCT.md
 
 # Build files
 build/

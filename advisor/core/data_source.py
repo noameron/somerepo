@@ -1,74 +1,53 @@
-"""Abstract base class for data sources in the Advisor system."""
+"""Base data source class for all scrapers."""
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
 from .database import Database
+from .config import get_config
 
 
 class DataSource(ABC):
-    """Abstract base class for all data sources (Reddit, SEC, News, etc.)."""
+    """Abstract base class for all data sources."""
     
     def __init__(self, config: Dict[str, Any]):
         """Initialize data source with configuration."""
         self.config = config
-        self.db = Database()
+        self.db = Database(get_config().get_database_path())
         self._validate_config()
     
     @abstractmethod
     def _validate_config(self) -> None:
-        """Validate the configuration for this data source."""
-        pass
-    
-    @abstractmethod
-    def scrape(self) -> Dict[str, int]:
-        """Scrape data from the source and store in database.
-        
-        Returns:
-            Dictionary with 'stored' and 'skipped' counts
-        """
+        """Validate data source specific configuration."""
         pass
     
     @abstractmethod
     def get_source_name(self) -> str:
-        """Get the name of this data source (e.g., 'reddit', 'sec', 'news')."""
+        """Get the name of this data source."""
         pass
     
-    def ensure_stocks_exist(self, ticker_symbols: List[str]) -> None:
-        """Ensure all ticker symbols exist in the database."""
-        for ticker in ticker_symbols:
-            self.db.add_stock(ticker)
-    
-    def is_duplicate(self, external_id: str) -> bool:
-        """Check if mention already exists in database."""
-        return self.db.mention_exists(self.get_source_name(), external_id)
-    
-    def store_mention(self, stock_id: int, content: str, url: str, 
-                     external_id: str, metadata: str) -> bool:
-        """Store a stock mention in the database."""
-        try:
-            self.db.add_mention(
-                stock_id=stock_id,
-                source=self.get_source_name(),
-                content=content,
-                url=url,
-                external_id=external_id,
-                metadata=metadata
-            )
-            return True
-        except Exception as e:
-            print(f"✗ Error storing mention: {e}")
-            return False
-    
-    # Backward compatibility method (deprecated)
-    def store_data_point(self, stock_id: int, content: str, url: str, 
-                        external_id: str, metadata: str) -> bool:
-        """Deprecated: Use store_mention() instead."""
-        return self.store_mention(stock_id, content, url, external_id, metadata)
-    
-    def get_stock_id(self, symbol: str) -> Optional[int]:
-        """Get stock ID by symbol."""
-        return self.db.get_stock_id(symbol)
+    @abstractmethod
+    def scrape(self) -> Dict[str, int]:
+        """Scrape data from the source."""
+        pass
     
     def get_config_value(self, key: str, default: Any = None) -> Any:
-        """Get configuration value with optional default."""
+        """Get a configuration value with optional default."""
         return self.config.get(key, default)
+    
+    def ensure_stocks_exist(self, tickers: List[str]) -> None:
+        """Ensure all ticker symbols exist in the database."""
+        for ticker in tickers:
+            self.db.add_stock(ticker.upper())
+    
+    def get_stock_id(self, symbol: str) -> Optional[int]:
+        """Get stock ID for a symbol."""
+        return self.db.get_stock_id(symbol.upper())
+    
+    def store_mention(self, stock_id: int, content: str, url: str = None,
+                     external_id: str = None, metadata: str = None) -> bool:
+        """Store a mention in the database."""
+        return self.db.add_mention(stock_id, content, url, external_id, metadata)
+    
+    def is_duplicate(self, external_id: str) -> bool:
+        """Check if external_id already exists in database."""
+        return self.db.is_duplicate(external_id)

@@ -1,3 +1,5 @@
+> This document focuses on testing discipline. See CLAUDE.md for broader development standards.
+
 ### Why We Ship Broken Code (And How to Stop)
 
   Every AI assistant has done this: Made a change, thought "that looks right," told the user it's fixed, and then... it wasn't. The user comes back frustrated. We apologize. We try again. We waste everyone's time.

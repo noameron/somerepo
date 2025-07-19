@@ -136,12 +136,6 @@ project/
 - Integration tests for critical paths
 - Don't over-test simple getters/setters
 
-### Reality Checkpoints:
-- ✅ After writing each failing test (Red phase)
-- ✅ After making each test pass (Green phase)
-- ✅ Before refactoring (all tests green)
-- ✅ Before committing (tests + linting pass)
-
 ## Git Commit Management - MANDATORY PRACTICES
 
 **Never commit cache/temp files** - Always exclude `__pycache__/`, `.pyc`, `.DS_Store`, IDE folders, and other generated files from commits.

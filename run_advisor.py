@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Convenience script to run the Advisor CLI."""
+"""Run the Advisor CLI for analysis and recommendations."""
 
 import sys
+sys.path.append('.')
+
 from advisor.cli.advisor import main
 
 if __name__ == "__main__":
