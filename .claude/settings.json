@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat /Users/noam.meron/Documents/somerepo/.claude/instructions/PRE_COMPACT_AUDIT.md"
+          }
+        ]
+      },
+      {
+        "matcher": "manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat /Users/noam.meron/Documents/somerepo/.claude/instructions/PRE_COMPACT_AUDIT.md"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/noam.meron/Documents/somerepo/.claude/scripts/todo_sound.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
