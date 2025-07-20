@@ -233,9 +233,9 @@ class TestConfig:
         config = Config()
         creds = config.get_reddit_credentials()
         
-        assert creds["client_id"] is None
-        assert creds["client_secret"] is None
-        assert creds["user_agent"] is None
+        assert creds["client_id"] == ""
+        assert creds["client_secret"] == ""
+        assert creds["user_agent"] == ""
 
     @patch.dict(os.environ, {
         "CLIENT_ID": "test_client_id",
