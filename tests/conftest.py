@@ -26,7 +26,6 @@ def test_db_path(temp_dir):
 def test_database(test_db_path):
     """Create a test database instance."""
     db = Database(str(test_db_path))
-    db.initialize()
     yield db
 
 
