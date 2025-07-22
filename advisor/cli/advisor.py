@@ -1,11 +1,12 @@
 """Advisor CLI for analysis and recommendations."""
 
 import argparse
+from typing import List, Optional
 from advisor.core.config import init_config
 from advisor.analysis.sentiment import SentimentAnalyzer
 
 
-def analyze_sentiment(stocks: list = None) -> None:
+def analyze_sentiment(stocks: Optional[List[str]] = None) -> None:
     """Analyze sentiment for specified stocks or all stocks."""
     analyzer = SentimentAnalyzer()
     

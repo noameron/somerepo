@@ -47,7 +47,10 @@ class Database:
     
     def add_stock(self, symbol: str) -> int:
         """Add a stock symbol to the database."""
-        cursor = self.connection.execute(
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
+        self.connection.execute(
             "INSERT OR IGNORE INTO stocks (symbol) VALUES (?)",
             (symbol,)
         )
@@ -59,20 +62,28 @@ class Database:
             (symbol,)
         ).fetchone()
         
-        return result['id']
+        if not result:
+            raise ValueError(f"Failed to find stock with symbol: {symbol}")
+        return int(result['id'])
     
     def get_stock_id(self, symbol: str) -> Optional[int]:
         """Get stock ID by symbol."""
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         result = self.connection.execute(
             "SELECT id FROM stocks WHERE symbol = ?",
             (symbol,)
         ).fetchone()
         
-        return result['id'] if result else None
+        return int(result['id']) if result else None
     
-    def add_mention(self, stock_id: int, content: str, url: str = None, 
-                   external_id: str = None, metadata: str = None) -> bool:
+    def add_mention(self, stock_id: int, content: str, url: Optional[str] = None, 
+                   external_id: Optional[str] = None, metadata: Optional[str] = None) -> bool:
         """Add a mention to the database."""
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         try:
             self.connection.execute("""
                 INSERT INTO mentions (stock_id, content, url, external_id, metadata)
@@ -85,6 +96,9 @@ class Database:
     
     def is_duplicate(self, external_id: str) -> bool:
         """Check if a mention with this external_id already exists."""
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         result = self.connection.execute(
             "SELECT 1 FROM mentions WHERE external_id = ?",
             (external_id,)
@@ -92,7 +106,7 @@ class Database:
         
         return result is not None
     
-    def get_mentions_for_stock(self, symbol: str, limit: int = None) -> List[Dict[str, Any]]:
+    def get_mentions_for_stock(self, symbol: str, limit: Optional[int] = None) -> List[Dict[str, Any]]:
         """Get all mentions for a specific stock."""
         query = """
             SELECT m.content, m.url, m.metadata, m.sentiment_score, m.created_at
@@ -105,11 +119,17 @@ class Database:
         if limit:
             query += f" LIMIT {limit}"
         
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         results = self.connection.execute(query, (symbol,)).fetchall()
         return [dict(row) for row in results]
     
     def update_sentiment_score(self, external_id: str, sentiment_score: float) -> bool:
         """Update sentiment score for a mention."""
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         cursor = self.connection.execute(
             "UPDATE mentions SET sentiment_score = ? WHERE external_id = ?",
             (sentiment_score, external_id)
@@ -119,6 +139,9 @@ class Database:
     
     def get_all_stocks(self) -> List[str]:
         """Get all stock symbols in the database."""
+        if not self.connection:
+            raise RuntimeError("Database connection not initialized")
+            
         results = self.connection.execute("SELECT symbol FROM stocks").fetchall()
         return [row['symbol'] for row in results]
     

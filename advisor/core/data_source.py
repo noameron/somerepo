@@ -43,8 +43,8 @@ class DataSource(ABC):
         """Get stock ID for a symbol."""
         return self.db.get_stock_id(symbol.upper())
     
-    def store_mention(self, stock_id: int, content: str, url: str = None,
-                     external_id: str = None, metadata: str = None) -> bool:
+    def store_mention(self, stock_id: int, content: str, url: str = "",
+                     external_id: str = "", metadata: str = "") -> bool:
         """Store a mention in the database."""
         return self.db.add_mention(stock_id, content, url, external_id, metadata)
     

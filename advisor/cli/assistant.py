@@ -4,11 +4,12 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 from advisor.core.config import init_config
 from advisor.scrapers.reddit.data_source import RedditDataSource
 
 
-def collect_reddit_data(config_path: str = None) -> None:
+def collect_reddit_data(config_path: Optional[str] = None) -> None:
     """Collect data from Reddit sources."""
     # Initialize configuration
     if config_path:
@@ -43,7 +44,7 @@ def collect_reddit_data(config_path: str = None) -> None:
         # Run scraping
         results = reddit_source.scrape()
         
-        print(f"\n✅ Reddit scraping completed!")
+        print("\n✅ Reddit scraping completed!")
         print(f"📈 Stored mentions: {results['stored']}")
         print(f"⏭️  Skipped duplicates: {results['skipped']}")
         

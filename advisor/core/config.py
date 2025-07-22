@@ -3,14 +3,14 @@
 import json
 import os
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from dotenv import load_dotenv
 
 
 class Config:
     """Global configuration manager."""
     
-    def __init__(self, config_path: str = None):
+    def __init__(self, config_path: Optional[str] = None):
         """Initialize configuration."""
         # Load environment variables
         load_dotenv()
@@ -74,9 +74,9 @@ class Config:
     def get_reddit_credentials(self) -> Dict[str, str]:
         """Get Reddit API credentials from environment."""
         return {
-            "client_id": os.getenv("CLIENT_ID"),
-            "client_secret": os.getenv("CLIENT_SECRET"),
-            "user_agent": os.getenv("USER_AGENT")
+            "client_id": os.getenv("CLIENT_ID") or "",
+            "client_secret": os.getenv("CLIENT_SECRET") or "",
+            "user_agent": os.getenv("USER_AGENT") or ""
         }
     
     def validate_reddit_credentials(self) -> bool:
@@ -97,7 +97,7 @@ def get_config() -> Config:
     return _config_instance
 
 
-def init_config(config_path: str = None) -> Config:
+def init_config(config_path: Optional[str] = None) -> Config:
     """Initialize global configuration with optional config file."""
     global _config_instance
     _config_instance = Config(config_path)

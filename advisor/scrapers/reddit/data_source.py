@@ -6,8 +6,7 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any, List
-import sys
+from typing import Dict, Any, List, Tuple
 
 import praw
 from dotenv import load_dotenv
@@ -75,7 +74,7 @@ class RedditDataSource(DataSource):
         max_days = self.get_config_value("max_days", 7)
         return min_days <= age_days <= max_days
     
-    def get_submission_text(self, submission) -> str:
+    def get_submission_text(self, submission: Any) -> str:
         """Extract combined text from Reddit submission."""
         title = submission.title or ""
         selftext = getattr(submission, "selftext", "") or ""
@@ -118,7 +117,7 @@ class RedditDataSource(DataSource):
         
         return stored_count
     
-    def process_submissions(self, subreddit_name: str, subreddit) -> tuple[int, int]:
+    def process_submissions(self, subreddit_name: str, subreddit: Any) -> Tuple[int, int]:
         """Process all submissions from a subreddit."""
         stored = 0
         skipped = 0
@@ -151,7 +150,7 @@ class RedditDataSource(DataSource):
         
         return stored, skipped
     
-    def process_comments(self, subreddit_name: str, subreddit) -> tuple[int, int]:
+    def process_comments(self, subreddit_name: str, subreddit: Any) -> Tuple[int, int]:
         """Process all comments from a subreddit."""
         stored = 0
         skipped = 0

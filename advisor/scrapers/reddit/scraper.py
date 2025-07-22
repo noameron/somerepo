@@ -2,10 +2,11 @@
 
 import json
 import os
+from typing import Dict
 
 from .data_source import RedditDataSource
 
-def scrape():
+def scrape() -> Dict[str, int]:
     """Scrape Reddit data using RedditDataSource."""
     # Load configuration
     config_path = os.path.join(os.path.dirname(__file__), "config.json")

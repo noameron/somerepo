@@ -1,8 +1,7 @@
 """Sentiment analysis using LLM integration."""
 
 import json
-import requests
-from typing import Dict, List, Optional
+from typing import Dict, Optional, Any
 from advisor.core.database import Database
 from advisor.core.config import get_config
 
@@ -10,7 +9,7 @@ from advisor.core.config import get_config
 class SentimentAnalyzer:
     """LLM-based sentiment analyzer for stock mentions."""
     
-    def __init__(self, api_url: str = None, api_key: str = None):
+    def __init__(self, api_url: Optional[str] = None, api_key: Optional[str] = None):
         """Initialize sentiment analyzer."""
         self.api_url = api_url or "https://api.openai.com/v1/chat/completions"
         self.api_key = api_key
@@ -22,20 +21,6 @@ class SentimentAnalyzer:
         Returns:
             float: Sentiment score between -1.0 (very negative) and 1.0 (very positive)
         """
-        prompt = f"""
-        Analyze the sentiment of this text specifically regarding the stock ticker {ticker}.
-        Consider only mentions and context related to {ticker}.
-        
-        Text: "{content}"
-        
-        Respond with only a JSON object containing:
-        - "sentiment": a number between -1.0 (very negative) and 1.0 (very positive)
-        - "confidence": a number between 0.0 and 1.0 indicating confidence in the analysis
-        - "reasoning": brief explanation of the sentiment
-        
-        Example: {{"sentiment": 0.7, "confidence": 0.8, "reasoning": "Positive outlook on earnings"}}
-        """
-        
         # For now, implement a simple keyword-based fallback
         # This can be replaced with actual LLM API calls when available
         return self._simple_sentiment_analysis(content, ticker)
@@ -73,7 +58,7 @@ class SentimentAnalyzer:
         sentiment = (positive_score - negative_score) / max(total_sentiment_words, 1)
         return max(-1.0, min(1.0, sentiment))
     
-    def analyze_mentions_for_stock(self, symbol: str, limit: int = None) -> Dict[str, float]:
+    def analyze_mentions_for_stock(self, symbol: str, limit: Optional[int] = None) -> Dict[str, float]:
         """Analyze sentiment for all mentions of a stock."""
         mentions = self.db.get_mentions_for_stock(symbol, limit)
         
@@ -109,7 +94,7 @@ class SentimentAnalyzer:
             "analyzed": analyzed_count
         }
     
-    def get_recommendation(self, sentiment_score: float, mention_count: int) -> str:
+    def get_recommendation(self, sentiment_score: float, mention_count: float) -> str:
         """Get BUY/SELL/HOLD recommendation based on sentiment."""
         config = get_config()
         buy_threshold = config.get("analysis.sentiment_threshold_buy", 0.7)
@@ -126,7 +111,7 @@ class SentimentAnalyzer:
         else:
             return "HOLD"
     
-    def analyze_all_stocks(self) -> Dict[str, Dict[str, any]]:
+    def analyze_all_stocks(self) -> Dict[str, Dict[str, Any]]:
         """Analyze sentiment for all stocks in database."""
         stocks = self.db.get_all_stocks()
         results = {}
