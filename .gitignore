@@ -35,9 +35,7 @@ Thumbs.db
 *~
 
 # Claude Code settings
-.claude/
-CLAUDE.md
-PRODUCT.md
+.claude/settings.local.json
 
 # Build files
 build/
